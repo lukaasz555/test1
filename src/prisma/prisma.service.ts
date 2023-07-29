@@ -13,8 +13,4 @@ export class PrismaService extends PrismaClient {
       },
     });
   }
-
-  cleanDB() {
-    return this.$transaction([]);
-  }
 }
