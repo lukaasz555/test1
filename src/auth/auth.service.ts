@@ -13,13 +13,17 @@ export class AuthService {
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
-          password: dto.password,
+          hash: dto.hash,
+          name: dto.name,
+          lastname: dto.lastname,
         },
       });
+
       return user;
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError) {
-      }
+        console.log(err);
+      } else console.log(err);
     }
   }
 }
