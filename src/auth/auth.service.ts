@@ -1,24 +1,58 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import * as argon from 'argon2';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private config: ConfigService) {}
+  constructor(
+    private prisma: PrismaService,
+    private config: ConfigService,
+    private jwt: JwtService,
+  ) {}
 
-  async register(dto: AuthDto) {
+  async login(dto: LoginDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('There is no such a user');
+    }
+
+    if (user) {
+      const isPasswordValid = await argon.verify(user.password, dto.password);
+      if (isPasswordValid) {
+        return this.signToken(user.id, user.email);
+      } else {
+        console.log('wrong credentials');
+        throw new UnauthorizedException('Wrong credentials');
+      }
+    }
+  }
+
+  async register(dto: RegisterDto) {
+    const hashedPassword = await argon.hash(dto.password);
+
     try {
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
-          hash: dto.hash,
+          password: hashedPassword,
           name: dto.name,
           lastname: dto.lastname,
         },
       });
-
       return user;
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError) {
@@ -28,5 +62,18 @@ export class AuthService {
         console.log(err);
       } else console.log(err);
     }
+  }
+
+  async signToken(userId: number, email: string): Promise<{ token: string }> {
+    const payload = {
+      sub: userId,
+      email,
+    };
+
+    const token = await this.jwt.signAsync(payload, {
+      secret: this.config.get('SECRET_TOKEN'),
+    });
+
+    return { token };
   }
 }
