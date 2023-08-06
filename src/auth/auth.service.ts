@@ -35,7 +35,6 @@ export class AuthService {
       if (isPasswordValid) {
         return this.signToken(user.id, user.email);
       } else {
-        console.log('wrong credentials');
         throw new UnauthorizedException('Wrong credentials');
       }
     }
