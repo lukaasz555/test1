@@ -31,6 +31,7 @@ export class ProductService {
       data: {
         name: dto.name,
         price: dto.price,
+        categoryId: dto.categoryId,
         description: dto.description || undefined,
       },
     });

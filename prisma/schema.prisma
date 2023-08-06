@@ -16,7 +16,7 @@ model User {
   password  String
   name      String
   lastname  String
-  role      String    @default("User")
+  role      String
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   orders    Order[]
@@ -52,4 +52,6 @@ model Category {
   id          Int     @id @default(autoincrement())
   name        String
   description String?
+
+  @@map("categories")
 }
