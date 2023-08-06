@@ -4,20 +4,16 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginDto, RegisterDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
-import { JwtService } from '@nestjs/jwt';
+import { UserRolesEnum } from 'src/common/enums/UserRolesEnum';
+import { signToken } from './helpers/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private prisma: PrismaService,
-    private config: ConfigService,
-    private jwt: JwtService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
@@ -33,7 +29,7 @@ export class AuthService {
     if (user) {
       const isPasswordValid = await argon.verify(user.password, dto.password);
       if (isPasswordValid) {
-        return this.signToken(user.id, user.email);
+        return signToken(user.id, user.email, user.role);
       } else {
         throw new UnauthorizedException('Wrong credentials');
       }
@@ -50,9 +46,10 @@ export class AuthService {
           password: hashedPassword,
           name: dto.name,
           lastname: dto.lastname,
+          role: UserRolesEnum.User,
         },
       });
-      return user;
+      return user.id;
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError) {
         if (err.code === 'P2002') {
@@ -61,18 +58,5 @@ export class AuthService {
         console.log(err);
       } else console.log(err);
     }
-  }
-
-  async signToken(userId: number, email: string): Promise<{ token: string }> {
-    const payload = {
-      sub: userId,
-      email,
-    };
-
-    const token = await this.jwt.signAsync(payload, {
-      secret: this.config.get('SECRET_TOKEN'),
-    });
-
-    return { token };
   }
 }
