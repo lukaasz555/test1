@@ -1,4 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 
@@ -10,5 +16,10 @@ export class UserController {
   @UseGuards(RolesGuard)
   getUsers() {
     return this.userService.getUsersList();
+  }
+
+  @Get(':id')
+  getUser(@Param('id', ParseIntPipe) userId: number) {
+    return this.userService.getUserById(userId);
   }
 }
