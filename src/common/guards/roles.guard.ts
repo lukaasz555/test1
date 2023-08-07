@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRolesEnum } from '../enums/UserRolesEnum';
-import { getRoleFromToken } from 'src/auth/helpers/jwt';
+import { getDataFromToken } from 'src/auth/helpers/jwt';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -15,7 +15,7 @@ export class RolesGuard implements CanActivate {
     if (!token) return false;
 
     try {
-      const role = await getRoleFromToken(token);
+      const role = await getDataFromToken(token, 'role');
 
       if (role === requiredRole) {
         return true;

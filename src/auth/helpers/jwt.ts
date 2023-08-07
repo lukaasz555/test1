@@ -5,6 +5,10 @@ import { UserRolesEnum } from 'src/common/enums/UserRolesEnum';
 const jwt = new JwtService();
 const cfg = new ConfigService();
 
+interface User {
+  [key: string]: string | number | UserRolesEnum;
+}
+
 export async function signToken(
   userId: number,
   email: string,
@@ -23,9 +27,12 @@ export async function signToken(
   return { token };
 }
 
-export async function getRoleFromToken(token: string): Promise<UserRolesEnum> {
-  const user = await jwt.verifyAsync(token, {
+export async function getDataFromToken(
+  token: string,
+  data = 'sub',
+): Promise<string> {
+  const user: User = await jwt.verifyAsync(token, {
     secret: cfg.get('SECRET_TOKEN'),
   });
-  return user.role;
+  return user[data] as string;
 }
