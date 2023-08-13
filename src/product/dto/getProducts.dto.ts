@@ -1,14 +1,7 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { PaginationDataDto } from 'src/common/dtos/PaginationData.dto';
+import { IsOptional, IsString } from 'class-validator';
 
-export class GetProductsDto {
-  @IsString()
-  @IsNotEmpty()
-  limit: string;
-
-  @IsString()
-  @IsNotEmpty()
-  page: string;
-
+export class GetProductsDto extends PaginationDataDto {
   @IsString()
   @IsOptional()
   searchValue?: string;

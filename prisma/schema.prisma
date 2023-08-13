@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        Int       @id @unique @default(autoincrement())
   email     String    @unique
   password  String
   name      String
@@ -25,10 +25,12 @@ model User {
 }
 
 model Order {
-  id         Int   @id @default(autoincrement())
+  id         Int      @id @unique @default(autoincrement())
   itemsValue Float
-  shipValue  Float @default(0)
+  shipValue  Float    @default(0)
   totalValue Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
@@ -39,7 +41,7 @@ model Order {
 }
 
 model Product {
-  id          Int     @id @default(autoincrement())
+  id          Int     @id @unique @default(autoincrement())
   name        String
   price       Float
   description String?
@@ -49,7 +51,7 @@ model Product {
 }
 
 model Category {
-  id          Int     @id @default(autoincrement())
+  id          Int     @id @unique @default(autoincrement())
   name        String
   description String?
 
