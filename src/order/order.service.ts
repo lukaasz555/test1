@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Order } from '@prisma/client';
 import { GetOrdersDto, CreateOrderDto } from './dto';
 import { PaginationResult } from 'src/common/interfaces/PaginationResult';
+import { OrderStatusEnum } from 'src/common/enums/OrderStatus.enum';
 
 @Injectable()
 export class OrderService {
@@ -108,6 +109,7 @@ export class OrderService {
           totalValue: dto.totalValue,
           shipValue: dto.shipValue,
           productsIds: dto.productsIds,
+          status: OrderStatusEnum.New,
           userId,
         },
       });

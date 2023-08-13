@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { getDataFromToken } from 'src/auth/helpers/jwt';
-import { UserRolesEnum } from 'src/common/enums/UserRolesEnum';
+import { UserRolesEnum } from 'src/common/enums/UserRoles.enum';
 
 @Injectable()
 export class UserIdValidationMiddleware implements NestMiddleware {
