@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRolesEnum } from '../enums/UserRolesEnum';
+import { UserRolesEnum } from '../enums/UserRoles.enum';
 import { getDataFromToken } from 'src/auth/helpers/jwt';
 
 @Injectable()
