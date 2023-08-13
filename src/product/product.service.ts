@@ -1,16 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import { CreateProductDto, GetProductsDto } from './dto';
+import { PaginationResult } from 'src/common/interfaces/PaginationResult';
 
 @Injectable()
 export class ProductService {
   constructor(private prisma: PrismaService) {}
-
-  async getProducts() {
-    const products: Product[] = await this.prisma.product.findMany();
-    return products;
-  }
 
   async getProduct(productId: number) {
     const product = await this.prisma.product.findUnique({
@@ -24,6 +20,45 @@ export class ProductService {
     } else {
       throw new NotFoundException('No such a product');
     }
+  }
+
+  async getFilteredProducts(query: GetProductsDto) {
+    const paginationData = {
+      skip: (Number(query.page) - 1) * Number(query.limit),
+      take: Number(query.limit),
+    };
+
+    if (query.searchValue) {
+      Object.assign(paginationData, {
+        where: {
+          name: {
+            contains: query.searchValue,
+            mode: 'insensitive',
+          },
+        },
+      });
+    }
+
+    if (query.sortDesc) {
+      Object.assign(paginationData, {
+        orderBy: {
+          price: query.sortDesc === 'true' ? 'desc' : 'asc',
+        },
+      });
+    }
+
+    const products = await this.prisma.product.findMany(paginationData);
+    const totalProducts = await this.prisma.product.count(paginationData);
+
+    const res: PaginationResult<Product> = {
+      page: Number(query.page),
+      limit: Number(query.limit),
+      totalRecords: totalProducts,
+      totalPages: Math.ceil(totalProducts / +query.limit),
+      items: products,
+    };
+
+    return res;
   }
 
   async createProduct(dto: CreateProductDto) {
