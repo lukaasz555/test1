@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class PaginationDataDto {
   @IsString()
@@ -8,4 +8,16 @@ export class PaginationDataDto {
   @IsString()
   @IsNotEmpty()
   page: string;
+
+  @IsOptional()
+  @IsString()
+  searchValue?: string;
+
+  @IsOptional()
+  @IsString()
+  sortDesc?: string;
+
+  @IsOptional()
+  @IsString()
+  sortBy?: string;
 }

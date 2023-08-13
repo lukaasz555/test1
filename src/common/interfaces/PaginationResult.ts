@@ -1,4 +1,4 @@
-export interface PaginationResult<T> {
+export interface PaginationResult<T extends object> {
   page: number;
   limit: number;
   totalRecords: number;
