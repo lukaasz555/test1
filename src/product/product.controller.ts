@@ -17,7 +17,9 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  getTest(@Query() query: GetProductsDto): Promise<PaginationResult<Product>> {
+  getFilteredProducts(
+    @Query() query: GetProductsDto,
+  ): Promise<PaginationResult<Product>> {
     return this.productService.getFilteredProducts(query);
   }
 
