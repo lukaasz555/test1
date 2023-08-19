@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginDto, RegisterDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
-import { UserRolesEnum } from 'src/common/enums/UserRolesEnum';
+import { UserRolesEnum } from 'src/common/enums/UserRoles.enum';
 import { signToken } from './helpers/jwt';
 
 @Injectable()

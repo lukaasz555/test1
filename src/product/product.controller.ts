@@ -5,17 +5,22 @@ import {
   Post,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import { CreateProductDto, GetProductsDto } from './dto';
+import { Product } from '@prisma/client';
+import { PaginationResult } from 'src/common/interfaces/PaginationResult';
 
 @Controller('products')
 export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  getProducts() {
-    return this.productService.getProducts();
+  getFilteredProducts(
+    @Query() query: GetProductsDto,
+  ): Promise<PaginationResult<Product>> {
+    return this.productService.getFilteredProducts(query);
   }
 
   @Get(':id')
