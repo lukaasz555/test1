@@ -42,7 +42,7 @@ export class ProductService {
     if (query.sortDesc) {
       Object.assign(paginationData, {
         orderBy: {
-          price: query.sortDesc === 'true' ? 'desc' : 'asc',
+          price: query.sortDesc === '1' ? 'desc' : 'asc',
         },
       });
     }
