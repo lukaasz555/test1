@@ -17,7 +17,17 @@ export class UserService {
     });
 
     if (user) {
-      const { password, ...userData } = user;
+      const { password, updatedAt, ...userData } = user;
+      const userOrders = await this.prisma.order.findMany({
+        where: {
+          userId,
+        },
+      });
+
+      Object.assign(userData, {
+        orders: userOrders,
+      });
+
       return userData;
     } else throw new NotFoundException('There is no user with provided id');
   }
