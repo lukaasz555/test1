@@ -48,13 +48,13 @@ export class ProductService {
     }
 
     const products = await this.prisma.product.findMany(paginationData);
-    const totalProducts = await this.prisma.product.count(paginationData);
+    const totalProductsQty = await this.prisma.product.count();
 
     const res: PaginationResult<Product> = {
       page: Number(query.page),
       limit: Number(query.limit),
-      totalRecords: totalProducts,
-      totalPages: Math.ceil(totalProducts / +query.limit),
+      totalRecords: totalProductsQty,
+      totalPages: Math.ceil(totalProductsQty / +query.limit),
       items: products,
     };
 
