@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Category } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 const mockCategories: Category[] = [
   {
@@ -32,8 +33,28 @@ const mockCategories: Category[] = [
 
 @Injectable()
 export class CategoriesService {
-  getAllCategories() {
-    return mockCategories;
+  constructor(private prisma: PrismaService) {}
+
+  async getItemsQtyInCategory(categoryId: number): Promise<number> {
+    const qty = await this.prisma.product.count({
+      where: {
+        categoryId,
+      },
+    });
+    return qty;
+  }
+
+  async getAllCategories() {
+    const categories = await Promise.all(
+      mockCategories.map(async (c) => {
+        const itemsQuantity = await this.getItemsQtyInCategory(c.id);
+        return {
+          ...c,
+          itemsQuantity,
+        };
+      }),
+    );
+    return categories;
   }
 
   getCategoryById(categoryId: number) {
