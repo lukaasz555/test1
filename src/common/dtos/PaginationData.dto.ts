@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 export class PaginationDataDto {
   @IsString()
   @IsNotEmpty()
-  limit: string;
+  itemsPerPage: string;
 
   @IsString()
   @IsNotEmpty()

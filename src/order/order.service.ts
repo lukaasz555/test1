@@ -12,8 +12,8 @@ export class OrderService {
   async getFilteredOrders(query: GetOrdersDto, userId?: number) {
     try {
       const paginationData = {
-        skip: (Number(query.page) - 1) * Number(query.limit),
-        take: Number(query.limit),
+        skip: (Number(query.page) - 1) * Number(query.itemsPerPage),
+        take: Number(query.itemsPerPage),
         where: {},
       };
 
@@ -58,9 +58,9 @@ export class OrderService {
 
       const res: PaginationResult<Order> = {
         page: Number(query.page),
-        limit: Number(query.limit),
+        itemsPerPage: Number(query.itemsPerPage),
         totalRecords: totalOrders,
-        totalPages: Math.ceil(totalOrders / +query.limit),
+        totalPages: Math.ceil(totalOrders / +query.itemsPerPage),
         items: orders,
       };
 
