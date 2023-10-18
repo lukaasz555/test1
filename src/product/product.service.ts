@@ -22,6 +22,11 @@ export class ProductService {
     }
   }
 
+  async getProducts() {
+    const products = await this.prisma.product.findMany();
+    return products;
+  }
+
   async getFilteredProducts(query: GetProductsDto) {
     const paginationData = {
       skip: (Number(query.page) - 1) * Number(query.itemsPerPage),
