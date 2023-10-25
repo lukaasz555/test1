@@ -17,14 +17,14 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  // getFilteredProducts(
-  //   @Query() query: GetProductsDto,
-  // ): Promise<PaginationResult<Product>> {
-  //   return this.productService.getFilteredProducts(query);
-  // }
-  getAllProducts(): Promise<Product[]> {
-    return this.productService.getProducts();
+  getFilteredProducts(
+    @Query() query: GetProductsDto,
+  ): Promise<PaginationResult<Product>> {
+    return this.productService.getFilteredProducts(query);
   }
+  // getAllProducts(): Promise<Product[]> {
+  //   return this.productService.getProducts();
+  // }
 
   @Get(':id')
   getProduct(@Param('id', ParseIntPipe) productId: number) {

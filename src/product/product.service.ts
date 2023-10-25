@@ -29,8 +29,8 @@ export class ProductService {
 
   async getFilteredProducts(query: GetProductsDto) {
     const paginationData = {
-      skip: (Number(query.page) - 1) * Number(query.itemsPerPage),
-      take: Number(query.itemsPerPage),
+      skip: (Number(query.page) - 1) * Number(query.limit),
+      take: Number(query.limit),
     };
 
     if (query.searchValue) {
@@ -57,9 +57,9 @@ export class ProductService {
 
     const res: PaginationResult<Product> = {
       page: Number(query.page),
-      itemsPerPage: Number(query.itemsPerPage),
+      limit: Number(query.limit),
       totalRecords: totalProductsQty,
-      totalPages: Math.ceil(totalProductsQty / +query.itemsPerPage),
+      totalPages: Math.ceil(totalProductsQty / +query.limit),
       items: products,
     };
 
